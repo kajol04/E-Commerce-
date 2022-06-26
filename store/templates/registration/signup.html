@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+      <div class="p-4 m-4">
+        <div class="col-lg-5 mx-auto border rounded pt-4">
+            <h3 class="alert alert-light border rounded">Create An  Account</h3>
+            <form action="/signup" method="POST">
+                {%csrf_token%}
+                <!--first name-->
+                {% if error %}
+                  <div class="alert alert-danger" role="alert">
+                    {{error}}
+                  </div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="">First Name</label>
+                    <input type="text" value="{{values.first_name}}" name="firstname" id="" class="form-control form-control-sm" placeholder="">
+                  </div>
+                <!--lastname-->
+                <div class="form-group">
+                    <label for="">Last Name</label>
+                    <input type="text" value="{{values.last_name}}" name="lastname" id="" class="form-control form-control-sm" placeholder="">
+                  </div>
+                  <!--phone-->
+                <div class="form-group">
+                    <label for="">Phone</label>
+                    <input type="text" value="{{values.Phone}}" name="phone" id="" class="form-control form-control-sm" placeholder="" >
+                  </div>
+                <!--email-->
+                <div class="form-group">
+                  <label for="">Email</label>
+                  <input type="email" value="{{values.email}}" name="email" id="" class="form-control form-control-sm" placeholder="example@xyz.com" >
+                </div>
+                <!--password-->
+                <div class="form-group">
+                    <label for="">Password</label>
+                    <input type="password" name="password" id="" class="form-control form-control-sm" placeholder="***********" >
+                  </div>
+                <div class="form-group">
+                    <input class="btn-btn-sm btn-info" type="submit" value="create account">
+                </div>
+                
+            </form>
+        </div>
+      </div>
+  </div>
+{% endblock %}

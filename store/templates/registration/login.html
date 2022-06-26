@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% providers_media_js %} 
+{% block content %}
+  <div class="container">
+      <div class="p-4 m-4">
+        <div class="col-lg-4 mx-auto  mt-4 mb-4 border rounded pt-4">
+            <h3 class="alert alert-light border mt-4 mb-4 rounded">Login Here</h3>
+            <form action="/login" method="POST">
+                {%csrf_token%}
+                {% if error %}
+                  <div class="alert alert-danger" role="alert">
+                    {{error}}
+                  </div>
+                {% endif %}
+                <!--email-->
+                <div class="form-group">
+                  <label for="">Email</label>
+                  <input type="email" value="{{values.email}}" name="email" id="" class="form-control form-control-sm" placeholder="example@xyz.com" >
+                </div>
+                <!--password-->
+                <div class="form-group">
+                    <label for="">Password</label>
+                    <input type="password" name="password" id="" class="form-control form-control-sm" placeholder="***********" >
+                  </div>
+                <div class="form-group">
+                    <input class="btn-btn-sm btn-info col-lg-4" type="submit" value="Login">
+                </div>
+                <div>
+                  <button type="button" class="btn btn col-lg-4 btn-sm  mb-4"><a href="{% provider_login_url "facebook" method="oauth2" %}">Facebook</a></button>
+                  <button type="button" class="btn btn col-lg-4 btn-sm  mb-4"><a href="{% provider_login_url "google" %}">Gmail</a></button>
+                </div>
+            </form>
+        </div>
+      </div>
+  </div>
+{% endblock %}

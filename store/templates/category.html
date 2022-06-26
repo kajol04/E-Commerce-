@@ -1,0 +1,29 @@
+{% extends 'base.html'%}
+
+
+  <!-- body -->
+{% block content %}
+{% load cart %}
+{% load custom_filters %}
+
+<div class="container-fluid mt-3">
+    <h3 class="pb-1 bottom-border">CATEGORIES</h3>
+<div class="row">
+
+  <!--all products-->
+
+  <div id="brand" class="col-lg-9 mx-auto">
+    <div class="row mx-auto" >
+      {% for cat in data %} 
+          <div class="card mx-auto mb-3" id={{cat.id}} style="width: 18rem;">
+              <img class="card-img-top mt-2 mb-2 " src="{{cat.image.url}}" alt="Card image cap">
+              <div class="card-body ">
+                <a href="/?category={{cat.id}}" class="list-group-item list-group-item-action ">{{cat.name}}</a>
+              </div>
+          </div>
+      {% endfor %}
+  </div>
+  </div>
+</div>
+</div>
+{% endblock %}   
