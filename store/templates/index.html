@@ -32,7 +32,7 @@
           <ul>
               {% for cats in categorys%}
               <li class="list-group-item">
-                  <input type="checkbox" />&nbsp;
+                  <input class="filter-checkbox" data-filter="category"  value="{{cats.category__id}}" type="checkbox" />&nbsp;
                   {{cats.category__name}}
               </li>
               {%endfor%}
@@ -48,11 +48,11 @@
     <div class="row mx-auto" >
       {% for product in product %} 
           <div class="card mx-auto mb-3" id={{product.id}} style="width: 18rem;">
-              <img class="card-img-top" src="{{product.image.url}}" alt="Card image cap">
+              <img class="card-img-top" src="{{product.productattribute_set.first.image.url}}" alt="Card image cap">
               <div class="card-body">
                   <p class="card-title">{{product.name}}</p>
-                  <p class="card-text"><b>{{product.price|currency}}</b></p>
-                  <p class="nav-link pb-1"><a href="{%url'product-detail' product.pk %}">View Product</a></p>
+                  <p class="card-text"><strong>{{product.productattribute_set.first.price|currency}}</sstrong></p>
+                  <p class="nav-link pb-1"><a href="/product/{{product.id}}">View Product</a></p>
               </div>
       
             <div class="card-footer p-0 no-gutters">

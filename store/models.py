@@ -10,15 +10,15 @@ class Product(models.Model):
     name=models.CharField(max_length=40)
     category=models.ForeignKey("Category",on_delete=models.CASCADE,default=1)
     description=models.TextField(max_length=200,default='',null=True,blank=True)
+    slug=models.CharField(max_length=400)
     specs=models.TextField()
-    image=models.ImageField(upload_to='uploads/products/')
     brand=models.ForeignKey("Brand",on_delete=models.CASCADE)
-    size=models.ForeignKey("Size",on_delete=models.CASCADE)
-    color=models.ForeignKey("Color",on_delete=models.CASCADE)
-    price=models.PositiveBigIntegerField()
     status=models.BooleanField(default=True)
     class Meta:
         verbose_name_plural='5. product '
+    
+    def __str__(self):
+        return self.name
 
     @staticmethod
     def get__products_by_id(ids):
@@ -125,5 +125,12 @@ class Order(models.Model):
                 .filter(customer=customer_id)\
                     .order_by('-date')
 
-
-       
+class ProductAttribute(models.Model):
+    size=models.ForeignKey("Size",on_delete=models.CASCADE)
+    color=models.ForeignKey("Color",on_delete=models.CASCADE)
+    price=models.PositiveBigIntegerField()
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    image=models.ImageField(upload_to='uploads/products/')
+    
+    def __str__(self):
+        return self.product.name

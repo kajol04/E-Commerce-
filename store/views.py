@@ -207,8 +207,9 @@ def search(request):
     return render(request,'search.html',{'data':data})   
 
 
-def product_detail(request,pk):
-    product=Product.objects.get(id=pk)
+def product_detail(request,id):
+    
+    product=Product.objects.get(id=id)
     context={
         'product':product
     }
