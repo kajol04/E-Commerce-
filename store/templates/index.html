@@ -3,82 +3,42 @@
 
   <!-- body -->
 {% block content %}
-{% load cart %}
+
 {% load custom_filters %}
+{% load static %}
 
 <div class="container-fluid mt-3">
 <div class="row">
   <!--filter-->
-<div class="col-lg-3 mx-auto">
-  <div class="list-group">
-    <div class="card mb-4">
-      <h6 class="card-header">Brand</h6>
-      <div class="list-group list-group-flush">
-          <ul>
-              {% for brand in brand%}
-              <li class="list-group-item">
-                  <input type="checkbox" />&nbsp;
-                  {{brand.brand__name}}
-              </li>
-              {%endfor%}
-          </ul>
-      </div>
-    </div> 
-  </div>
-  <div class="list-group">
-    <div class="card mb-4">
-      <h6 class="card-header">Category</h6>
-      <div class="list-group list-group-flush">
-          <ul>
-              {% for cats in categorys%}
-              <li class="list-group-item">
-                  <input class="filter-checkbox" data-filter="category"  value="{{cats.category__id}}" type="checkbox" />&nbsp;
-                  {{cats.category__name}}
-              </li>
-              {%endfor%}
-          </ul>
-      </div>
-    </div> 
-  </div>
+  <div class="col-lg-3 mx-auto">
+    
+  {%include 'filters.html'%}  
+  </div> 
+</div>
   
 </div>
 
   <!--all products-->
   <div id="products" class="col-lg-9 mx-auto">
-    <div class="row mx-auto" >
+    <div class="row mx-auto" id="filteredProducts">
+      <p class="ajaxLoader">loading...</p>
       {% for product in product %} 
           <div class="card mx-auto mb-3" id={{product.id}} style="width: 18rem;">
               <img class="card-img-top" src="{{product.productattribute_set.first.image.url}}" alt="Card image cap">
               <div class="card-body">
                   <p class="card-title">{{product.name}}</p>
-                  <p class="card-text"><strong>{{product.productattribute_set.first.price|currency}}</sstrong></p>
+                  <p class="card-text"><strong>{{product.productattribute_set.first.price|currency}}</strong></p>
                   <p class="nav-link pb-1"><a href="/product/{{product.id}}">View Product</a></p>
               </div>
-      
+
             <div class="card-footer p-0 no-gutters">
-              {% if product|is_in_cart:request.session.cart %}
+             
                 <div class="row no-gutters" >
-                  <form action="/#{{product.id}}" method="POST" class="-col-2">
-                    {% csrf_token %}
-                    <input hidden type="text" name="product" value='{{product.id}}'>
-                    <input hidden type="text" name="remove" value='True'>
-                    <input type="submit" value="-"  class="float-right btn btn-secondary border form-control
-                    ">
-                  </form>
-                  <div class="text-center col">{{product|cart_quantity:request.session.cart}} in cart</div>
-                  <form action="/#{{product.id}}" method="POST" class="-col-2 ">
-                    {% csrf_token %}
-                    <input hidden type="text" name="product" value='{{product.id}}'>
-                    <input type="submit" value="+"  class="float-right btn btn-secondary border form-control ">
-                  </form>
+                  
+                  
+                  
                 </div>
-              {% else %}
-                <form action="/#{{product.id}}" method="POST" class="btn-block">
-                  {% csrf_token %}
-                  <input hidden type="text" name="product" value='{{product.id}}'>
-                  <input href="#" type="submit" value="Add To Cart"  class="float-right btn btn-light border form-control">
-                </form>
-              {% endif %}
+              
             </div>
           </div>
       {% endfor %}

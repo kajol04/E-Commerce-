@@ -1,0 +1,46 @@
+{% load static%}
+
+<script type="text/javascript" src="{% static 'product-filter.js' %}"></script>
+<div class="list-group">
+    <div class="card mb-4">
+      <h6 class="card-header">Color</h6>
+      <div class="list-group list-group-flush">
+          <ul>
+              {% for color in colors%}
+              <li class="list-group-item">
+                  <input class="filter-checkbox" data-filter="color" value="{{color.color__id}}" type="checkbox" />&nbsp;
+                  <button class="btn" style="background-color: {{color.color__color_code}}; margin-top: -5px;" ></button>
+              </li>
+              {%endfor%}
+          </ul>
+      </div>
+    </div> 
+  </div>
+  <div class="list-group">
+    <div class="card mb-4">
+      <h6 class="card-header">Brand</h6>
+      <div class="list-group list-group-flush">
+          <ul>
+              {% for brand in brands%}
+              <li class="list-group-item">
+                  <input class="filter-checkbox" type="checkbox" data-filter="brand" value="{{brand.brand__id}} " />&nbsp;
+                  {{brand.brand__name}}
+              </li>
+              {%endfor%}
+          </ul>
+      </div>
+    </div> 
+  </div>
+  <div class="list-group">
+    <div class="card mb-4">
+      <h6 class="card-header">Category</h6>
+      <div class="list-group list-group-flush">
+          <ul>
+              {% for cats in cats%}
+              <li class="list-group-item">
+                  <input class="filter-checkbox" data-filter="category"  value="{{cats.category__id}}" type="checkbox" />&nbsp;
+                  {{cats.category__name}}
+              </li>
+              {%endfor%}
+            </ul>
+        </div>

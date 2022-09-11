@@ -1,45 +1,46 @@
-import json
+import json 
 from os import remove
 from turtle import title
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.shortcuts import render,redirect,HttpResponseRedirect
 from django.contrib.auth.hashers import make_password,check_password
 from django.http import HttpResponse
 from django.views import View
-from .models import Product,Category,Customer,Order,Brand,Size
+from .models import Product,Category,Customer,Order,Brand,Size,ProductAttribute,Color
 from store.middlewares.auth import auth_middleware
 from django.utils.decorators import method_decorator 
+from django.template.loader import render_to_string
+
 
 class Index(View):
-    def post(self,request):
-        product=request.POST.get('product')
-        remove=request.POST.get('remove')
-        cart=request.session.get('cart')
-        if cart:
-            quantity=cart.get(product)
-            if quantity:
-                if remove:
-                    if quantity <=1:
-                        cart.pop(product)
-                    else:
-                        cart[product]=quantity-1
-                else:
-                    cart[product]=quantity+1
-            else:
-                cart[product]=1
-        else:
-            cart={}
-            cart[product]=1
-        request.session['cart'] = cart
-        print('cart' , request.session['cart'])
-        return redirect('home')
+    # def post(self,request):
+    #     product=request.POST.get('product')
+    #     remove=request.POST.get('remove')
+        # cart=request.session.get('cart')
+        # if cart:
+        #     quantity=cart.get(product)
+        #     if quantity:
+        #         if remove:
+        #             if quantity <=1:
+        #                 cart.pop(product)
+        #             else:
+        #                 cart[product]=quantity-1
+        #         else:
+        #             cart[product]=quantity+1
+        #     else:
+        #         cart[product]=1
+        # else:
+        #     cart={}
+        #     cart[product]=1
+        # request.session['cart'] = cart
+        # print('cart' , request.session['cart'])
+        # return redirect('home')
     def get(self,request):
         cart=request.session.get('cart')
         if not cart:
             request.session['cart']={}
         product=None
-        category=Product.objects.distinct().values('category__name','category_id')
-        brand=Product.objects.distinct().values('brand__name','brand_id')
+        
         name=request.session.get('customer_name')
         categories=Category.get_all__category()
         categoryid=request.GET.get('category')
@@ -55,9 +56,8 @@ class Index(View):
             "product": product,
             "category":categories,
             "brandlist":brandlist,
-            "categorys":category,
             "name":name,
-            'brand':brand,
+            
         }
         return render(request,'index.html',context)
    
@@ -169,11 +169,6 @@ def logout(request):
     request.session.clear()
     return redirect('login')
 
-class Cart(View):
-    def get(self,request):
-        ids=list(request.session.get('cart').keys())
-        products=Product.get__products_by_id(ids)
-        return render(request,'cart.html',{'cart':products})
 
 class Checkout(View):
     def post(self,request):
@@ -210,7 +205,54 @@ def search(request):
 def product_detail(request,id):
     
     product=Product.objects.get(id=id)
+    colors=ProductAttribute.objects.filter(product=product).values('color__name','color__id','color__color_code').distinct()
+    sizes=ProductAttribute.objects.filter(product=product).values('size__name','size__id','color__id','price').distinct()
     context={
-        'product':product
+        'product':product,
+        'colors':colors,
+        'sizes':sizes
     }
     return render(request,'product-detail.html',context)
+
+def filter_data(request):
+	colors=request.GET.getlist('color[]')
+	categories=request.GET.getlist('category[]')
+	brands=request.GET.getlist('brand[]')
+	
+	allProducts=Product.objects.all().order_by('-id').distinct()
+    
+	if len(colors)>0:
+		allProducts=allProducts.filter(productattribute__color__id__in=colors).distinct()
+                       
+	if len(categories)>0:
+		allProducts=allProducts.filter(category__id__in=categories).distinct()
+	if len(brands)>0:
+		allProducts=allProducts.filter(brand__id__in=brands).distinct()
+	t=render_to_string('ajax/product-list.html',{'product':allProducts})
+	return JsonResponse({'data':t}) 
+
+def add_to_cart(request):
+    cart_p={}
+    cart_p[str(request.GET['id'])]={
+        'name':request.GET['name'],
+        'price':request.GET['price'],
+        'qty':request.GET['qty'],}    
+    if 'cartdata' in request.session:
+        if str(request.GET['id']) in request.session['cartdata']:
+            cart_data=request.session['cartdata']
+            cart_data[str(request.GET['id'])]['qty']=int(cart_p[str(request.GET['id'])]['qty'])
+            cart_data.update(cart_data)
+            request.session['cartdata']=cart_data
+        else:
+            cart_data=request.session['cartdata']
+            cart_data.update(cart_p)
+            request.session['cartdata']=cart_data
+
+    else:
+        request.session['cartdata']=cart_p 
+    return JsonResponse({'data':request.session['cartdata'],'totalitems':len(request.session['cartdata'])}) 
+                
+def cart_list(request):
+    return render(request,'cart.html')
+        
+    
