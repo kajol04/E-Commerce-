@@ -32,6 +32,7 @@ INSTALLED_APPS = [
 
     #local
     'store',
+    'paypal.standard.ipn',
 
     #allauth
     'allauth',
@@ -137,8 +138,8 @@ STATICFILES_DIRS=(
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-MEDIA_URL="/image/download/"
-MEDIA_ROOT=BASE_DIR
+MEDIA_URL="/uploads/"
+MEDIA_ROOT= os.path.join(BASE_DIR, 'uploads')
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
@@ -146,5 +147,9 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+LOGIN_URL='/login'
 SITE_ID=1
 LOGIN_REDIRECT_URL='/'
+
+PAYPAL_RECEIVER_EMAIL ='sb-roymc20865037@business.example.com'
+PAYPAL_TEST=True
